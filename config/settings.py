@@ -149,3 +149,8 @@ if DEBUG:
         'http://127.0.0.1:3000',
         'http://localhost:3000',
     )
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2
+}
