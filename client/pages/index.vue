@@ -40,6 +40,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { UPDATE_TAGS, UPDATE_ARTICLES } from "../store/mutation-types"
+
 export default {
   head() {
     return {
@@ -69,17 +70,21 @@ export default {
       this.selectedTag = this.$route.query.tag || ''
     },
   },
+  // async asyncData(context) {
+  //   return context.app.$getTags(context.store)
+  // },
   async asyncData(context) {
-    return context.app.$getTags(context.store)
+    return context.app.$getArticles(context.store)
   },
   created() {
-    // this.$getArticles()
-    // this.$getTags(context.store)
-  },
+    // console.log(this.store)
+    // this.$getArticles(this.store)
+    // this.$getTags(this.store)
+  },    
     
-  mounted() {
-    console.log(this.tagList)
-  },
+  // mounted() {
+  //   console.log(this.tagList)
+  // },
   computed: {
     ...mapGetters(
       'tags',['tagList'],

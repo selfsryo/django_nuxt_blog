@@ -13,13 +13,12 @@ export const getters = {
 
 export const mutations = {
   [UPDATE_TAGS](state, payload) {
-    state.tags = payload.data.result
+    state.tags = payload.data
   }
 }
 
 export const actions = {
   [UPDATE_TAGS]({ commit }, payload) {
-    console.log(payload.data)
     commit(UPDATE_TAGS, payload)
   }
 }

@@ -5,7 +5,7 @@ import { UPDATE_TAGS } from "../store/mutation-types"
 const getTags = store => {
   const url = 'http://127.0.0.1:8000/api/tags/'
 
-  return fetch(url)
+  fetch(url)
     .then(response => {
       if (response.ok){
         return response.json();
