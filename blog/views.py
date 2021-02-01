@@ -1,6 +1,7 @@
-from rest_framework import pagination, viewsets
+from rest_framework import viewsets
 
 from blog.models import Tag, Article
+from blog.paginations import CustomPagination
 from blog.permissions import IsAdminOrReadOnly
 from blog.serializers import ArticleSerializer, TagSerializer
 
@@ -15,5 +16,5 @@ class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.filter(is_public=True)
     serializer_class = ArticleSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    pagination_class = pagination.PageNumberPagination
+    pagination_class = CustomPagination
     lookup_field = 'slug'

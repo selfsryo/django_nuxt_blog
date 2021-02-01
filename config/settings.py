@@ -142,11 +142,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-REST_FRAMEWORK = {
-    'PAGE_SIZE': 2
-}
-
-
 if DEBUG:
     INSTALLED_APPS += ['corsheaders']
     MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
