@@ -1,0 +1,35 @@
+import { UPDATE_ARTICLES } from "./mutation-types"
+
+export const state = () => ({
+  articles: {},
+})
+
+export const getters = {
+  articleList: state => {
+    return state.articles.results
+  },
+  // currentPage(state) {
+  //   return state.articles.current_page
+  // },
+  // totalPages(state) {
+  //   return state.articles.total_pages
+  // },
+  previousPageURL(state) {
+    return state.articles.previous
+  },
+  nextPageURL(state) {
+    return state.articles.next
+  },
+}
+
+export const mutations = {
+  [UPDATE_ARTICLES](state, payload) {
+    state.articles = payload
+  }
+}
+
+export const actions = {
+  [UPDATE_ARTICLES]({ commit }, payload) {
+    commit(UPDATE_ARTICLES, payload)
+  }
+}
