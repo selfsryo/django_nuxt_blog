@@ -22,12 +22,12 @@
     </div>
 
     <article class="article" v-for="article of articleList" :key="article.slug">
-      <!-- <nuxt-link class="article-title" :to="`/detail/${article.slug}/`">{{article.title}}</nuxt-link> -->
+      <nuxt-link class="article-title" :to="`/detail/${article.slug}/`">{{article.title}}</nuxt-link>
       <div class="article-date">{{(article.created_at)}}</div>
       <img class="article-thumbnail" :src="article.thumbnail"/>
       <p class="article-lead">{{article.lead_text}}</p>
       <div class="article-more">
-        <!-- <nuxt-link :to="`/detail/${article.slug}/`"><span class="right">▶︎ </span><span class="more">more</span></nuxt-link> -->
+        <nuxt-link :to="`/detail/${article.slug}/`"><span class="right">▶︎ </span><span class="more">more</span></nuxt-link>
       </div>
       <ul class="article-tag">
         <li :style="{'background': tag.color}" v-for="tag of article.tag" :key="tag.id" @click="updateSelectedTag(tag.id); search()"> # {{tag.name}}</li>
@@ -57,6 +57,9 @@ export default {
       ],
     }
   },
+  watchQuery: [
+    'page'
+  ],
   data() {
     return {
       selectedTag: this.$route.query.tag || '',
@@ -65,26 +68,30 @@ export default {
   },
   watch: {
     $route() {
-      this.loaded = false
-      this.$getArticles()
       this.selectedTag = this.$route.query.tag || ''
     },
   },
-  // async asyncData(context) {
-  //   return context.app.$getTags(context.store)
-  // },
+
   async asyncData(context) {
-    return context.app.$getArticles(context.store)
+
+    let articleURL = context.app.$articlesURL
+    if (context.query.tag) {
+      articleURL += `?tag=${context.query.tag}`
+    }
+
+    return fetch(articleURL)
+      .then(response => {
+          return response.json()
+      })
+      .then(data => {
+        context.store.dispatch('articles/' + UPDATE_ARTICLES, {data})
+      })
   },
+
   created() {
-    // console.log(this.store)
-    // this.$getArticles(this.store)
-    // this.$getTags(this.store)
-  },    
-    
-  // mounted() {
-  //   console.log(this.tagList)
-  // },
+    this.getTag()
+  },
+
   computed: {
     ...mapGetters(
       'tags',['tagList'],
@@ -107,6 +114,16 @@ export default {
       'tags',[
         UPDATE_TAGS
       ]),
+
+    getTag() {
+      fetch(this.$tagsURL)
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          this[UPDATE_TAGS](data)
+        })
+    },
 
     getPageURL(page) {
       return this.$router.resolve({
@@ -253,7 +270,7 @@ article {
 .page-link .nextPage {
   right: 30%;
 }
-.loadingMask {
+/* .loadingMask {
   background: #fff;
   display: block;
   height: 8000px;
@@ -262,56 +279,5 @@ article {
   top: 350px;
   left: 0;
   z-index: 2;
-}
-@media (max-width: 1024px) {
-  .container {
-    width: 70%;
-  }
-}
-@media (max-width: 768px) {
-  .tag-filter select {
-    font-size: 16px;
-    transform: scale(0.8);
-  }
-}
-@media (max-width: 480px) {
-  .container {
-    width: 85%;
-  }
-  .blog-logo {
-    width: 90%;
-    margin-bottom: 40px;
-  }
-  .tag-filter li{
-    margin-left: 6px;
-  }
-  .tag-filter li.category{
-    font-size: 11px;
-  }
-  article {
-    padding: 40px 0 70px;
-  }
-  .article-title {
-    font-size: 15px;
-  }
-  .article-date {
-    font-size: 11px;
-  }
-  .article-thumbnail {
-    width: 100%;
-    height: initial;
-  }
-  .article-lead {
-    font-size: 12px;
-  } 
-  .page-link .previousPage {
-    left: 15%;
-  }
-  .page-link .nextPage {
-    right: 15%;
-  }
-  .loadingMask {
-    top: 300px;
-  }
-}
+} */
 </style>

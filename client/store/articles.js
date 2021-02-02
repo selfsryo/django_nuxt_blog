@@ -8,12 +8,12 @@ export const getters = {
   articleList: state => {
     return state.articles.results
   },
-  // currentPage(state) {
-  //   return state.articles.current_page
-  // },
-  // totalPages(state) {
-  //   return state.articles.total_pages
-  // },
+  currentPage(state) {
+    return state.articles.current_page
+  },
+  totalPages(state) {
+    return state.articles.total_pages
+  },
   previousPageURL(state) {
     return state.articles.previous
   },
@@ -24,7 +24,7 @@ export const getters = {
 
 export const mutations = {
   [UPDATE_ARTICLES](state, payload) {
-    state.articles = payload
+    state.articles = payload.data
   }
 }
 

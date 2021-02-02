@@ -13,7 +13,7 @@ export const getters = {
 
 export const mutations = {
   [UPDATE_TAGS](state, payload) {
-    state.tags = payload.data
+    state.tags = payload
   }
 }
 
