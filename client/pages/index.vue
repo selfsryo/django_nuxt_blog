@@ -2,8 +2,7 @@
   <section class="container">
 
     <nuxt-link class="blog-logo" to="/">
-      <!-- <img src="/title.svg"> -->
-      title
+      DjangoとNuxt.jsで作ったblog
     </nuxt-link>
 
     <ul class="tag-filter">
@@ -44,21 +43,17 @@ import { UPDATE_TAGS, UPDATE_ARTICLES } from "../store/mutation-types"
 export default {
   head() {
     return {
-      title: "記事一覧 - Selfs Ryo Com",
+      title: "記事一覧 - DjangoとNuxt.jsで作ったblog",
       meta: [
         {
           name: 'description',
-          content: '独学で学んだことを発信していくblogです。主にPythonやDjango、JavaScriptにまつわる記事を書いていきます。'
-        },
-        {
-          property: 'og:description',
-          content: '独学で学んだことを発信していくblogです。主にPythonやDjango、JavaScriptにまつわる記事を書いていきます。'
+          content: 'DjangoとNuxt.jsでったblogです。'
         },
       ],
     }
   },
   watchQuery: [
-    'page'
+    'tag'
   ],
   data() {
     return {
@@ -81,7 +76,7 @@ export default {
 
     return fetch(articleURL)
       .then(response => {
-          return response.json()
+        return response.json()
       })
       .then(data => {
         context.store.dispatch('articles/' + UPDATE_ARTICLES, {data})
@@ -155,6 +150,7 @@ ul {
 }
 .blog-logo {
   display: block;
+  font-size: 28px;
   width: 400px;
   margin: 90px auto 80px;
   text-align: center;
