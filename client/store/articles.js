@@ -9,10 +9,10 @@ export const getters = {
     return state.articles.results
   },
   currentPage(state) {
-    return state.articles.current_page
+    return state.articles.current
   },
   totalPages(state) {
-    return state.articles.total_pages
+    return state.articles.total
   },
   previousPageURL(state) {
     return state.articles.previous

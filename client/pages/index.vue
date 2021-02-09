@@ -32,6 +32,16 @@
         <li :style="{'background': tag.color}" v-for="tag of article.tag" :key="tag.id" @click="updateSelectedTag(tag.id); search()"> # {{tag.name}}</li>
       </ul>
     </article>
+
+    <div class="page-link" v-if="totalPages >= 2">
+      <nuxt-link class="previousPage" id="back" v-if="previousPageURL" :to="getPageURL(currentPage - 1)">＜</nuxt-link>
+      <div class="page-number">
+        <nuxt-link :class="{'currentPage': page === currentPage}" v-for="page of totalPages" :key="page" :to="getPageURL(page)">
+          {{page}}
+        </nuxt-link>
+      </div>
+      <nuxt-link class="nextPage" id="next" v-if="nextPageURL" :to="getPageURL(currentPage + 1)">＞</nuxt-link>
+    </div>
     
   </section>
 </template>
@@ -53,25 +63,24 @@ export default {
     }
   },
   watchQuery: [
-    'tag'
+    'tag',
+    'page'
   ],
   data() {
     return {
       selectedTag: this.$route.query.tag || '',
-      loaded: false
+      loaded: false,
     }
-  },
-  watch: {
-    $route() {
-      this.selectedTag = this.$route.query.tag || ''
-    },
   },
 
   async asyncData(context) {
-
     let articleURL = context.app.$articlesURL
+
+    if (context.query.page) {
+      articleURL += `?page=${context.query.page}`
+    }
     if (context.query.tag) {
-      articleURL += `?tag=${context.query.tag}`
+      articleURL += `&tag=${context.query.tag}`
     }
 
     return fetch(articleURL)
@@ -94,6 +103,8 @@ export default {
     ...mapGetters(
       'articles', [
         'articleList',
+        'currentPage',
+        'totalPages',
         'previousPageURL',
         'nextPageURL'
       ]
@@ -122,7 +133,7 @@ export default {
 
     getPageURL(page) {
       return this.$router.resolve({
-        query: {page, tag: this.selectedTag }
+        query: this.createURLquery(page)
       }).route.fullPath
     },
 
@@ -133,9 +144,18 @@ export default {
     search() {
       this.$router.push({
         path: '/',
-        query: { page: 1, tag: this.selectedTag }
+        query: this.createURLquery(1)
       })
     },
+
+    createURLquery(page) {
+      const query = {}
+      query['page'] = page
+      if (this.selectedTag) {
+        query['tag'] = this.selectedTag
+      }
+      return query
+    }
   }
 };
 </script>
@@ -266,14 +286,5 @@ article {
 .page-link .nextPage {
   right: 30%;
 }
-/* .loadingMask {
-  background: #fff;
-  display: block;
-  height: 8000px;
-  width: 100%;
-  position: absolute;
-  top: 350px;
-  left: 0;
-  z-index: 2;
-} */
+
 </style>
