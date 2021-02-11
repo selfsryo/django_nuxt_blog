@@ -57,39 +57,39 @@ export default {
       meta: [
         {
           name: 'description',
-          content: 'DjangoとNuxt.jsでったblogです。'
+          content: 'DjangoとNuxt.jsで作ったblogです。'
         },
       ],
     }
   },
-  watchQuery: [
-    'tag',
-    'page'
-  ],
+
+  watch: {
+    '$route.query': '$fetch'
+  },
+
+  async fetch() {
+    let articleURL = this.$articlesURL
+
+    if (this.$route.query.page) {
+      articleURL += `?page=${this.$route.query.page}`
+    }
+    if (this.$route.query.tag) {
+      articleURL += `&tag=${this.$route.query.tag}`
+    }
+    return fetch(articleURL)
+      .then(res => {
+        return res.json()
+      })
+      .then(data => {
+        this.$store.dispatch('articles/' + UPDATE_ARTICLES, {data})
+      })
+  },
+
   data() {
     return {
       selectedTag: this.$route.query.tag || '',
       loaded: false,
     }
-  },
-
-  async asyncData(context) {
-    let articleURL = context.app.$articlesURL
-
-    if (context.query.page) {
-      articleURL += `?page=${context.query.page}`
-    }
-    if (context.query.tag) {
-      articleURL += `&tag=${context.query.tag}`
-    }
-
-    return fetch(articleURL)
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        context.store.dispatch('articles/' + UPDATE_ARTICLES, {data})
-      })
   },
 
   created() {
