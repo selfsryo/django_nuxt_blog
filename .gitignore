@@ -164,3 +164,4 @@ npm-debug.log
 dist
 
 # End of https://www.toptal.com/developers/gitignore/api/django,nuxtjs
+.DS_Store
