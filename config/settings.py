@@ -149,12 +149,3 @@ if DEBUG:
         'http://127.0.0.1:3000',
         'http://localhost:3000',
     )
-
-
-if DEBUG:
-    INSTALLED_APPS += ['corsheaders']
-    MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
-    CORS_ORIGIN_WHITELIST = (
-        'http://127.0.0.1:3000',
-        'http://localhost:3000',
-    )
