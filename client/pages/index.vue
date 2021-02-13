@@ -74,11 +74,9 @@ export default {
       articleURL += `?page=${this.$route.query.page}`
     }
     if (this.$route.query.tag) {
-      // this.updateSelectedTag(this.$route.query.tag)
-      articleURL += `&tag=${this.$route.query.tag}` || ''
+      articleURL += `&tag=${this.$route.query.tag}`
     }
     this.selectedTag = this.$route.query.tag || ''
-    // console.log(this.$route.query.tag)
 
     return fetch(articleURL)
       .then(res => {
