@@ -6,7 +6,7 @@
     </nuxt-link>
 
     <ul class="tag-filter">
-      <li class="category">CATEGORY</li>
+      <li class="category">TAG</li>
       <li>
         <select v-model="selectedTag" @change="search()">
           <option value="" :key="-1">all</option>
