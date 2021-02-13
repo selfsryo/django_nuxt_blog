@@ -37,8 +37,8 @@ export default {
     }
   },
 
-  async asyncData({ app, route }) {
-    const articleURL = app.$articlesURL + route.params.slug
+  async asyncData({ $articlesURL, route }) {
+    const articleURL = $articlesURL + route.params.slug
 
     return fetch(articleURL)
       .then(res => {

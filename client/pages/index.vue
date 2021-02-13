@@ -49,7 +49,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { UPDATE_TAGS, UPDATE_ARTICLES } from "../store/mutation-types"
-
 export default {
   head() {
     return {
@@ -62,14 +61,11 @@ export default {
       ],
     }
   },
-
   watch: {
     '$route.query': '$fetch'
   },
-
   async fetch() {
     let articleURL = this.$articlesURL
-
     if (this.$route.query.page) {
       articleURL += `?page=${this.$route.query.page}`
     }
@@ -77,7 +73,6 @@ export default {
       articleURL += `&tag=${this.$route.query.tag}`
     }
     this.selectedTag = this.$route.query.tag || ''
-
     return fetch(articleURL)
       .then(res => {
         return res.json()
@@ -86,18 +81,15 @@ export default {
         this.$store.dispatch('articles/' + UPDATE_ARTICLES, {data})
       })
   },
-
   data() {
     return {
       selectedTag: this.$route.query.tag || '',
       loaded: false,
     }
   },
-
   created() {
     this.getTag()
   },
-
   computed: {
     ...mapGetters(
       'tags',['tagList'],
@@ -117,12 +109,10 @@ export default {
       'articles',[
         UPDATE_ARTICLES
       ]),
-
     ...mapActions(
       'tags',[
         UPDATE_TAGS
       ]),
-
     getTag() {
       fetch(this.$tagsURL)
         .then(response => {
@@ -132,24 +122,20 @@ export default {
           this[UPDATE_TAGS](data)
         })
     },
-
     getPageURL(page) {
       return this.$router.resolve({
         query: this.createURLquery(page)
       }).route.fullPath
     },
-
     updateSelectedTag(tag) {
       this.selectedTag = tag
     },
-
     search() {
       this.$router.push({
         path: '/',
         query: this.createURLquery(1)
       })
     },
-
     createURLquery(page) {
       const query = {}
       query['page'] = page
@@ -288,5 +274,4 @@ article {
 .page-link .nextPage {
   right: 30%;
 }
-
 </style>
