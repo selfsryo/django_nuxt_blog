@@ -24,7 +24,7 @@ export const getters = {
 
 export const mutations = {
   [UPDATE_ARTICLES](state, payload) {
-    state.articles = payload.data
+    state.articles = payload
   }
 }
 

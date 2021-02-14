@@ -18,3 +18,9 @@
 		}
 	};
 </script>
+
+<style scoped>
+/* .router {
+  min-height: 100vh;
+} */
+</style>

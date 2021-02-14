@@ -1,9 +1,9 @@
 <template>
   <section class="container">
 
-    <nuxt-link class="blog-logo" to="/">
+    <NuxtLink class="blog-logo" to="/">
       DjangoとNuxt.jsで作ったblog
-    </nuxt-link>
+    </NuxtLink>
 
     <ul class="tag-filter">
       <li class="category">TAG</li>
@@ -15,34 +15,38 @@
       </li>
     </ul>
 
-    <div v-if="!loaded">
-      <div class="spinner"></div>
-      <div class="loadingMask"></div>
+    <div v-if="$fetchState.pending">
+      <p class="spinner"></p>
+      <p class="loadingMask"></p>
     </div>
 
-    <article class="article" v-for="article of articleList" :key="article.slug">
-      <nuxt-link class="article-title" :to="`/detail/${article.slug}/`">{{article.title}}</nuxt-link>
-      <div class="article-date">{{(article.created_at)}}</div>
-      <img class="article-thumbnail" :src="article.thumbnail"/>
-      <p class="article-lead">{{article.lead_text}}</p>
-      <div class="article-more">
-        <nuxt-link :to="`/detail/${article.slug}/`"><span class="right">▶︎ </span><span class="more">more</span></nuxt-link>
-      </div>
-      <ul class="article-tag">
-        <li :style="{'background': tag.color}" v-for="tag of article.tag" :key="tag.id" @click="updateSelectedTag(tag.id); search()"> # {{tag.name}}</li>
-      </ul>
-    </article>
+    <div v-else>
 
-    <div class="page-link" v-if="totalPages >= 2">
-      <nuxt-link class="previousPage" id="back" v-if="previousPageURL" :to="getPageURL(currentPage - 1)">＜</nuxt-link>
-      <div class="page-number">
-        <nuxt-link :class="{'currentPage': page === currentPage}" v-for="page of totalPages" :key="page" :to="getPageURL(page)">
-          {{page}}
-        </nuxt-link>
+      <article class="article" v-for="article of articleList" :key="article.slug">
+        <NuxtLink class="article-title" :to="`/detail/${article.slug}/`">{{article.title}}</NuxtLink>
+        <div class="article-date">{{(article.created_at)}}</div>
+        <img class="article-thumbnail" :src="article.thumbnail"/>
+        <p class="article-lead">{{article.lead_text}}</p>
+        <div class="article-more">
+          <NuxtLink :to="`/detail/${article.slug}/`"><span class="right">▶︎ </span><span class="more">more</span></NuxtLink>
+        </div>
+        <ul class="article-tag">
+          <li :style="{'background': tag.color}" v-for="tag of article.tag" :key="tag.id" @click="updateSelectedTag(tag.id); search()"> # {{tag.name}}</li>
+        </ul>
+      </article>
+
+      <div class="page-link" v-if="totalPages >= 2">
+        <NuxtLink class="previousPage" id="back" v-if="previousPageURL" :to="getRouteFullPath(currentPage - 1)">＜</NuxtLink>
+        <div class="page-number">
+          <NuxtLink :class="{'currentPage': page === currentPage}" v-for="page of totalPages" :key="page" :to="getRouteFullPath(page)">
+            {{page}}
+          </NuxtLink>
+        </div>
+        <NuxtLink class="nextPage" id="next" v-if="nextPageURL" :to="getRouteFullPath(currentPage + 1)">＞</NuxtLink>
       </div>
-      <nuxt-link class="nextPage" id="next" v-if="nextPageURL" :to="getPageURL(currentPage + 1)">＞</nuxt-link>
+
     </div>
-    
+
   </section>
 </template>
 
@@ -50,45 +54,28 @@
 import { mapActions, mapGetters } from 'vuex'
 import { UPDATE_TAGS, UPDATE_ARTICLES } from "../store/mutation-types"
 export default {
-  head() {
+  data() {
     return {
-      title: "記事一覧 - DjangoとNuxt.jsで作ったblog",
-      meta: [
-        {
-          name: 'description',
-          content: 'DjangoとNuxt.jsで作ったblogです。'
-        },
-      ],
+      selectedTag:  this.$route.query.tag || '',
     }
   },
   watch: {
     '$route.query': '$fetch'
   },
   async fetch() {
-    let articleURL = this.$articlesURL
-    if (this.$route.query.page) {
-      articleURL += `?page=${this.$route.query.page}`
-    }
-    if (this.$route.query.tag) {
-      articleURL += `&tag=${this.$route.query.tag}`
-    }
+    // console.log(this)
+    let articlesURL = this.$articlesURL
     this.selectedTag = this.$route.query.tag || ''
-    return fetch(articleURL)
-      .then(res => {
-        return res.json()
-      })
-      .then(data => {
-        this.$store.dispatch('articles/' + UPDATE_ARTICLES, {data})
-      })
-  },
-  data() {
-    return {
-      selectedTag: this.$route.query.tag || '',
-      loaded: false,
+
+    if (this.$route.query.page) {
+      const query = this.getRouteFullPath(this.$route.query.page)
+      articlesURL += query.replace('/', '')
     }
-  },
+
+    return this.getArticles(articlesURL)
+  },  
   created() {
-    this.getTag()
+    return this.getTags()
   },
   computed: {
     ...mapGetters(
@@ -113,8 +100,8 @@ export default {
       'tags',[
         UPDATE_TAGS
       ]),
-    getTag() {
-      fetch(this.$tagsURL)
+    getTags() {
+      return fetch(this.$tagsURL)
         .then(response => {
           return response.json()
         })
@@ -122,13 +109,22 @@ export default {
           this[UPDATE_TAGS](data)
         })
     },
-    getPageURL(page) {
-      return this.$router.resolve({
-        query: this.createURLquery(page)
-      }).route.fullPath
+    getArticles(url){
+      return fetch(url)
+      .then(res => {
+        return res.json()
+      })
+      .then(data => {
+        this[UPDATE_ARTICLES](data)
+      })
     },
     updateSelectedTag(tag) {
       this.selectedTag = tag
+    },
+    getRouteFullPath(page) {
+      return this.$router.resolve({
+        query: this.createURLquery(page)
+      }).route.fullPath
     },
     search() {
       this.$router.push({
@@ -144,8 +140,9 @@ export default {
       }
       return query
     }
-  }
-};
+  },
+}
+
 </script>
 
 <style scoped>
@@ -273,5 +270,15 @@ article {
 }
 .page-link .nextPage {
   right: 30%;
+}
+.loadingMask {
+  background: #fff;
+  display: block;
+  height: 8000px;
+  width: 100%;
+  position: absolute;
+  top: 350px;
+  left: 0;
+  z-index: 2;
 }
 </style>
