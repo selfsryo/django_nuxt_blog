@@ -54,6 +54,17 @@
 import { mapActions, mapGetters } from 'vuex'
 import { UPDATE_TAGS, UPDATE_ARTICLES } from "../store/mutation-types"
 export default {
+  head() {
+    return {
+      title: "記事一覧 - DjangoとNuxt.jsで作ったblog",
+      meta: [
+        {
+          name: 'description',
+          content: 'DjangoとNuxt.jsで作ったblogです。'
+        },
+      ],
+    }
+  },
   data() {
     return {
       selectedTag:  this.$route.query.tag || '',
@@ -63,7 +74,6 @@ export default {
     '$route.query': '$fetch'
   },
   async fetch() {
-    // console.log(this)
     let articlesURL = this.$articlesURL
     this.selectedTag = this.$route.query.tag || ''
 
@@ -73,7 +83,7 @@ export default {
     }
 
     return this.getArticles(articlesURL)
-  },  
+  },
   created() {
     return this.getTags()
   },

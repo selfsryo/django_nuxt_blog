@@ -1,9 +1,7 @@
 <template>
   <div>
     <Header />
-    <div class="router">
       <Nuxt />
-    </div>
     <Footer />
   </div>
 </template>
@@ -18,9 +16,3 @@
 		}
 	};
 </script>
-
-<style scoped>
-/* .router {
-  min-height: 100vh;
-} */
-</style>
