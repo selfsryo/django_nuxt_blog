@@ -77,8 +77,8 @@ export default {
   },
 
   async fetch() {
-    let articlesURL = this.$articlesURL
     this.selectedTag = this.$route.query.tag || ''
+    let articlesURL = this.$articlesURL
 
     if (this.$route.query.page) {
       const queryStr = this.getRouteFullPath(this.$route.query.page)
