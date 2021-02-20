@@ -65,21 +65,24 @@ export default {
       ],
     }
   },
+
   data() {
     return {
       selectedTag:  this.$route.query.tag || '',
     }
   },
+
   watch: {
     '$route.query': '$fetch'
   },
+
   async fetch() {
     let articlesURL = this.$articlesURL
     this.selectedTag = this.$route.query.tag || ''
 
     if (this.$route.query.page) {
-      const query = this.getRouteFullPath(this.$route.query.page)
-      articlesURL += query.replace('/', '')
+      const queryStr = this.getRouteFullPath(this.$route.query.page)
+      articlesURL += queryStr.replace('/', '')
     }
 
     return this.getArticles(articlesURL)
@@ -106,20 +109,23 @@ export default {
       'articles',[
         UPDATE_ARTICLES
       ]),
+
     ...mapActions(
       'tags',[
         UPDATE_TAGS
       ]),
+
     getTags() {
       return fetch(this.$tagsURL)
-        .then(response => {
-          return response.json()
+        .then(res => {
+          return res.json()
         })
         .then(data => {
           this[UPDATE_TAGS](data)
         })
     },
-    getArticles(url){
+
+    getArticles(url) {
       return fetch(url)
       .then(res => {
         return res.json()
@@ -128,20 +134,24 @@ export default {
         this[UPDATE_ARTICLES](data)
       })
     },
+
     updateSelectedTag(tag) {
       this.selectedTag = tag
     },
+
     getRouteFullPath(page) {
       return this.$router.resolve({
         query: this.createURLquery(page)
       }).route.fullPath
     },
+
     search() {
       this.$router.push({
         path: '/',
         query: this.createURLquery(1)
       })
     },
+
     createURLquery(page) {
       const query = {}
       query['page'] = page
