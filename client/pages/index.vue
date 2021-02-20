@@ -10,7 +10,7 @@
       <li>
         <select v-model="selectedTag" @change="search()">
           <option value="" :key="-1">all</option>
-          <option v-for="tag of tagList" :value="tag.id" :key="tag.id">{{tag.name}}</option>
+          <option v-for="tag of tags" :value="tag.id" :key="tag.id">{{tag.name}}</option>
         </select>
       </li>
     </ul>
@@ -22,7 +22,7 @@
 
     <div v-else>
 
-      <article class="article" v-for="article of articleList" :key="article.slug">
+      <article class="article" v-for="article of articles.results" :key="article.slug">
         <NuxtLink class="article-title" :to="`/detail/${article.slug}/`">{{article.title}}</NuxtLink>
         <div class="article-date">{{(article.created_at)}}</div>
         <img class="article-thumbnail" :src="article.thumbnail"/>
@@ -35,14 +35,14 @@
         </ul>
       </article>
 
-      <div class="page-link" v-if="totalPages >= 2">
-        <NuxtLink class="previousPage" id="back" v-if="previousPageURL" :to="getRouteFullPath(currentPage - 1)">＜</NuxtLink>
+      <div class="page-link" v-if="articles.total >= 2">
+        <NuxtLink class="previousPage" id="back" v-if="articles.previous" :to="getRouteFullPath(articles.current - 1)">＜</NuxtLink>
         <div class="page-number">
-          <NuxtLink :class="{'currentPage': page === currentPage}" v-for="page of totalPages" :key="page" :to="getRouteFullPath(page)">
+          <NuxtLink :class="{'currentPage': page === articles.current}" v-for="page of articles.total" :key="page" :to="getRouteFullPath(page)">
             {{page}}
           </NuxtLink>
         </div>
-        <NuxtLink class="nextPage" id="next" v-if="nextPageURL" :to="getRouteFullPath(currentPage + 1)">＞</NuxtLink>
+        <NuxtLink class="nextPage" id="next" v-if="articles.next" :to="getRouteFullPath(articles.current + 1)">＞</NuxtLink>
       </div>
 
     </div>
@@ -51,8 +51,6 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import { UPDATE_TAGS, UPDATE_ARTICLES } from "../store/mutation-types"
 export default {
   head() {
     return {
@@ -69,6 +67,8 @@ export default {
   data() {
     return {
       selectedTag:  this.$route.query.tag || '',
+      articles: {},
+      tags: {},
     }
   },
 
@@ -85,57 +85,11 @@ export default {
       articlesURL += queryStr.replace('/', '')
     }
 
-    const articles = await this.getArticles(articlesURL)
-    return articles
+    this.articles = await fetch(articlesURL).then(res => res.json())
+    this.tags = await fetch(this.$tagsURL).then(res => res.json())
   },
-  created() {
-    return this.getTags()
-  },
-  computed: {
-    ...mapGetters(
-      'tags',['tagList'],
-    ),
-    ...mapGetters(
-      'articles', [
-        'articleList',
-        'currentPage',
-        'totalPages',
-        'previousPageURL',
-        'nextPageURL'
-      ]
-    ),
-  },
+
   methods: {
-    ...mapActions(
-      'articles',[
-        UPDATE_ARTICLES
-      ]),
-
-    ...mapActions(
-      'tags',[
-        UPDATE_TAGS
-      ]),
-
-    getTags() {
-      return fetch(this.$tagsURL)
-        .then(res => {
-          return res.json()
-        })
-        .then(data => {
-          this[UPDATE_TAGS](data)
-        })
-    },
-
-    getArticles(url) {
-      return fetch(url)
-      .then(res => {
-        return res.json()
-      })
-      .then(data => {
-        this[UPDATE_ARTICLES](data)
-      })
-    },
-
     updateSelectedTag(tag) {
       this.selectedTag = tag
     },

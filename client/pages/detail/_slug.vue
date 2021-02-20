@@ -39,14 +39,13 @@ export default {
 
   async asyncData({ $articlesURL, route }) {
     const articleURL = $articlesURL + route.params.slug
-    const article = await fetch(articleURL)
+    return fetch(articleURL)
       .then(res => {
         return res.json()
       })
       .then(data => {
         return { article: data }
       })
-    return article
   },
 
   data() {
