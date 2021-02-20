@@ -85,7 +85,8 @@ export default {
       articlesURL += queryStr.replace('/', '')
     }
 
-    return this.getArticles(articlesURL)
+    const articles = await this.getArticles(articlesURL)
+    return articles
   },
   created() {
     return this.getTags()

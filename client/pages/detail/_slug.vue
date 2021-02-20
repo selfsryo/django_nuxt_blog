@@ -39,15 +39,16 @@ export default {
 
   async asyncData({ $articlesURL, route }) {
     const articleURL = $articlesURL + route.params.slug
-
-    return fetch(articleURL)
+    const article = await fetch(articleURL)
       .then(res => {
         return res.json()
       })
       .then(data => {
         return { article: data }
       })
+    return article
   },
+
   data() {
     return {
       selectedTag: this.$route.query.tag || '',
@@ -66,9 +67,11 @@ export default {
         hljs.highlightBlock(block)
       })
     },
+
     updateSelectedTag(tag) {
       this.selectedTag = tag
     },
+
     search() {
       this.$router.push({
         path: '/',
@@ -81,6 +84,7 @@ export default {
       if (document.querySelector('.toc') != null) {
         const toc = document.querySelector('.toc')
         toc.id = 'toc'
+
         // 目次のタイトルに'目次'の文字を追加
         if (!document.getElementById('tocTitle')) {
           const tocTitle = document.createElement('p')
