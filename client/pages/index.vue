@@ -78,8 +78,8 @@ export default {
 
   async fetch() {
     this.selectedTag = this.$route.query.tag || ''
-    let articlesURL = this.$articlesURL
 
+    let articlesURL = this.$articlesURL
     if (this.$route.query.page) {
       const queryStr = this.getRouteFullPath(this.$route.query.page)
       articlesURL += queryStr.replace('/', '')

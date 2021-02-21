@@ -37,15 +37,10 @@ export default {
     }
   },
 
-  async asyncData({ $articlesURL, route }) {
-    const articleURL = $articlesURL + route.params.slug
-    return fetch(articleURL)
-      .then(res => {
-        return res.json()
-      })
-      .then(data => {
-        return { article: data }
-      })
+  async asyncData({ $articlesURL, params }) {
+    const articleURL = $articlesURL + params.slug
+    const article = await fetch(articleURL).then(res => res.json())
+    return { article }
   },
 
   data() {
@@ -57,11 +52,11 @@ export default {
 
   mounted() {
     this.setTocs()
-    this.updateCodeSyntaxHighlighting()
+    this.applyHighlighting()
   },
 
   methods: {
-    updateCodeSyntaxHighlighting() {
+    applyHighlighting() {
       document.querySelectorAll('pre code').forEach(block => {
         hljs.highlightBlock(block)
       })

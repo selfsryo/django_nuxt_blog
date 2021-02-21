@@ -35,7 +35,7 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    'nuxt-webfontloader'
+    'nuxt-webfontloader',
   ],
 
   // Url: https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap
